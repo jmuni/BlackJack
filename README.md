@@ -10,7 +10,9 @@ Runnable in your own Eclipse IDE, just run the program and follow the prompt.
 # TODO
 
 Fix splitting
+
 Add insurance
+
 Fix multiplayer
 
 Add side bets? 
