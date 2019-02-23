@@ -24,17 +24,21 @@ public class NewBlackJack {
 
 		// sets up a fixed sized array based on numDecks
 		Character[] deck = setUpDeck(numDecks);
-		// checking generated deck based on user input for number of decks
+	
 		
+
+		// checking generated deck based on user input for number of decks		
 		System.out.println("The Deck");
 		showDeck(deck);
 		// shuffles the array of cards
 //		shuffleDeck(deck);
+
 		List<Character> charList = Arrays.asList(deck);
 		Collections.shuffle(charList);
 		Character[] shuffledDeck = (Character[]) charList.toArray();
 		
-		
+//test for dealer blackjack			
+//		Character[] shuffledDeck = {'J','A','T','Q'};
 		// checking the shuffled deck. wont be shown
 		System.out.println("The Shuffled Deck");
 		showDeck(shuffledDeck);
@@ -50,10 +54,14 @@ public class NewBlackJack {
 		int n = 0;
 		// int playerTotal = 0;
 		// int dealerTotal = 0;
-		// boolean to see if player can doubledown or split
+		// boolean to see if player can double down or split
 		boolean canDoubleDown = false;
 		boolean canSplit = false;
 		int numSplit = 0;
+		
+		boolean playerBlackJack = false;
+		boolean dealerBlackJack = false;
+		boolean offerInsurance = false;
 
 		// we want an loop until the player says end or until the deck runs out
 		while (n < numCards) {
@@ -86,13 +94,13 @@ public class NewBlackJack {
 
 			// player get first card, dealer gets second, player gets third, and
 			// dealer gets fourth
-			playerHand = addCard(deck, playerHand, n);
+			playerHand = addCard(shuffledDeck, playerHand, n);
 			n++;
-			dealerHand = addCard(deck, dealerHand, n);
+			dealerHand = addCard(shuffledDeck, dealerHand, n);
 			n++;
-			playerHand = addCard(deck, playerHand, n);
+			playerHand = addCard(shuffledDeck, playerHand, n);
 			n++;
-			dealerHand = addCard(deck, dealerHand, n);
+			dealerHand = addCard(shuffledDeck, dealerHand, n);
 			n++;
 
 			// shows player hand and dealers 4th card. Dealer other card shows
@@ -100,13 +108,24 @@ public class NewBlackJack {
 			showPlayer(playerHand);
 			System.out.println("Your hand : " + handTotal(playerHand));
 			hideDealer(dealerHand);
+			
+			playerBlackJack = false;
+			dealerBlackJack = false;
+			offerInsurance = false;
+			
+			playerBlackJack = checkBlackJack(playerHand);
+			dealerBlackJack = checkBlackJack(dealerHand);
+			offerInsurance = checkInsurance(dealerHand);
+			
 
-			if (checkBlackJack(playerHand) && checkBlackJack(dealerHand)) {
-				System.out.println("You BOTH got BlackJack! You push!");
-			} else if (checkBlackJack(playerHand)) {
+			if (playerBlackJack && offerInsurance) {
+				System.out.println("You have Black Jack. The Dealer has Ace showing. Would you like even money? (y/n)");
+				System.out.println("If yes, you win your bet. If no, and dealer has BlackJack you push. If no and dealer does NOT have BlackJack you win 1.5x your bet.");
+				//do something, gotta fix this part
+			} else if (playerBlackJack && !offerInsurance) {
 				System.out.println("You got BlackJack!");
 				playerBalance = playerBalance + (betAmount * 3 / 2);
-			} else if (checkBlackJack(dealerHand)) {
+			} else if (!playerBlackJack && dealerBlackJack) {
 				showDealer(dealerHand);
 				System.out.println("Dealer got BlackJack!");
 				playerBalance = playerBalance - betAmount;
@@ -119,7 +138,7 @@ public class NewBlackJack {
 				canSplit = false;
 
 				System.out.println("Will you hit(h) / stand(s) ?");
-			}
+			
 
 			if (handTotal(playerHand) == 9 || handTotal(playerHand) == 10 || handTotal(playerHand) == 11) {
 				if (playerBalance >= (betAmount * 2)) {
@@ -139,7 +158,7 @@ public class NewBlackJack {
 			// so apparantly closing scanners messes this stuff up.
 
 			while (choice.equals("h")) {
-				playerHand = addCard(deck, playerHand, n);
+				playerHand = addCard(shuffledDeck, playerHand, n);
 				n++;
 				showPlayer(playerHand);
 				System.out.println("Your hand : " + handTotal(playerHand));
@@ -164,7 +183,7 @@ public class NewBlackJack {
 				showDealer(dealerHand);
 				System.out.println("Dealer : " + handTotal(dealerHand));
 				while (handTotal(dealerHand) < 17) {
-					dealerHand = addCard(deck, dealerHand, n);
+					dealerHand = addCard(shuffledDeck, dealerHand, n);
 					n++;
 					showDealer(dealerHand);
 					System.out.println("Dealer's hand : " + handTotal(dealerHand));
@@ -178,7 +197,7 @@ public class NewBlackJack {
 			if (choice.equals("d") && canDoubleDown == true) {
 
 				betAmount *= 2;
-				playerHand = addCard(deck, playerHand, n);
+				playerHand = addCard(shuffledDeck, playerHand, n);
 				n++;
 				showPlayer(playerHand);
 				System.out.println("Your hand : " + handTotal(playerHand));
@@ -191,7 +210,7 @@ public class NewBlackJack {
 				showDealer(dealerHand);
 				System.out.println("Dealer : " + handTotal(dealerHand));
 				while (handTotal(dealerHand) < 17) {
-					dealerHand = addCard(deck, dealerHand, n);
+					dealerHand = addCard(shuffledDeck, dealerHand, n);
 					n++;
 					showDealer(dealerHand);
 					System.out.println("Dealer's hand : " + handTotal(dealerHand));
@@ -259,6 +278,7 @@ public class NewBlackJack {
 		// close hit/stand scanner for next hand
 		// inputChoice.close();
 		
+		}//end checkBlackJack
 		/*
 		 * if(ready == ('r')) { continue; } else {
 		 * System.out.println("Not ready, exiting."); System.exit(0); }
@@ -270,9 +290,9 @@ public class NewBlackJack {
 	// }//end main
 
 	// creates the deck based on user input for number of decks
-	static Character[] setUpDeck(int methodNumDecks) {
+	static Character[] setUpDeck(int numDecks) {
 
-		int numCards = 52 * methodNumDecks;
+		int numCards = 52 * numDecks;
 		Character[] deck = new Character[numCards];
 
 		for (int i = 0; i < numCards; i++) {
@@ -313,16 +333,16 @@ public class NewBlackJack {
 
 	// method to check deck contents. useful because it can be used to show the
 	// generated deck and then the shuffled deck.
-	static void showDeck(Character methodDeck[]) {
+	static void showDeck(Character deck[]) {
 
-		for (int i = 0; i < methodDeck.length; i++) {
+		for (int i = 0; i < deck.length; i++) {
 			if (i % 26 == 0 && i != 0) {
 				System.out.println();
 			}
-			if(methodDeck[i] == 'T') {
+			if(deck[i] == 'T') 
 				System.out.print("10 ");
-			}
-			System.out.print(methodDeck[i] + " ");
+			else
+				System.out.print(deck[i] + " ");
 		}
 		System.out.println();
 	}
@@ -442,6 +462,15 @@ public class NewBlackJack {
 			hasBlackJack = true;
 		}
 		return hasBlackJack;
+	}
+	
+	static boolean checkInsurance(Character[] hand) {
+
+		boolean offerInsurance = false;
+		if (hand[2] == '0' && hand[0] == 'A') {
+			offerInsurance = true;
+		}
+		return offerInsurance;
 	}
 
 	// error check to see if player actually has enough to keep playing
