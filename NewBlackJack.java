@@ -28,8 +28,8 @@ public class NewBlackJack {
 		
 
 		// checking generated deck based on user input for number of decks		
-		System.out.println("The Deck");
-		showDeck(deck);
+//		System.out.println("The Deck");
+//		showDeck(deck);
 		// shuffles the array of cards
 //		shuffleDeck(deck);
 
@@ -40,8 +40,8 @@ public class NewBlackJack {
 //test for dealer blackjack			
 //		Character[] shuffledDeck = {'J','A','T','Q'};
 		// checking the shuffled deck. wont be shown
-		System.out.println("The Shuffled Deck");
-		showDeck(shuffledDeck);
+//		System.out.println("The Shuffled Deck");
+//		showDeck(shuffledDeck);
 
 		// initializes the player balance. Minimum balance is set to 10.
 		// when the player falls below the minimum balance, the program exits
@@ -253,8 +253,9 @@ public class NewBlackJack {
 			}
 		
 
-			if (handTotal(playerHand) <= 21 && handTotal(dealerHand) <= 21) {
-				if (handTotal(playerHand) > handTotal(dealerHand)) {
+//			if (handTotal(playerHand) <= 21 && handTotal(dealerHand) <= 21) {
+				playerBalance = compareHands(handTotal(playerHand), handTotal(dealerHand), playerBalance, betAmount);
+/*				if (handTotal(playerHand) > handTotal(dealerHand)) {
 					System.out.println("Your " + handTotal(playerHand) + " beats the Dealer's " + handTotal(dealerHand));
 					playerBalance += betAmount;
 				} else if (handTotal(playerHand) < handTotal(dealerHand)) {
@@ -263,27 +264,25 @@ public class NewBlackJack {
 				} else if (handTotal(playerHand) == handTotal(dealerHand)) {
 					System.out.println("Your " + handTotal(playerHand) + " pushes the Dealer's " + handTotal(dealerHand));
 				}
-			} // end bust loop
+*/
+//			} // end bust loop
 
 		}// end blackjack check
-		System.out.println();
+/*		System.out.println();
 		System.out.println("///////////////////////////////////////////////////////////////////////");
 		System.out.println("Starting new hand!");
 		System.out.println("Your balance now is : " + playerBalance);
 		System.out.println("There are " + (numCards - n) + " cards left in the deck");
-		// System.out.println("Ready for the next hand? Type r");
-		// Scanner inputReady = new Scanner(System.in);
-		// char ready = inputReady.next().charAt(0);
-		// inputReady.close();
-		// close hit/stand scanner for next hand
-		// inputChoice.close();
+*/ 
+//Above code has been moved into the method newHand
+		newHand(playerBalance, numCards, n);
 		
-		}//end checkBlackJack
+		}//end while loop for entire deck
 		/*
 		 * if(ready == ('r')) { continue; } else {
 		 * System.out.println("Not ready, exiting."); System.exit(0); }
 		 */
-	}// end while loop for deck
+	}// end main
 
 	// showProb
 
@@ -536,7 +535,31 @@ public class NewBlackJack {
 		// System.out.println("Bust Chance : " +
 		// actualPercent.format(bustPercent) + "%");
 		// return bustPercent;
+		
 
+	} //end bustChance
+	
+	static int compareHands (int playerTotal, int dealerTotal, int playerBalance, int betAmount) {
+		
+		if (playerTotal > dealerTotal) {
+			System.out.println("Your " + playerTotal + " beats the Dealer's " + dealerTotal);
+			playerBalance += betAmount;
+		} else if (playerTotal < dealerTotal)  {
+			System.out.println("The Dealer's " + dealerTotal + " beats your " + playerTotal);
+			playerBalance -= betAmount;
+		} else if (playerTotal == dealerTotal) {
+			System.out.println("Your " + playerTotal + " pushes the Dealer's " + dealerTotal);
+		}
+		
+		return playerBalance;
+	}
+	
+	static void newHand(int playerBalance, int numCards, int n) {
+		System.out.println();
+		System.out.println("///////////////////////////////////////////////////////////////////////");
+		System.out.println("Starting new hand!");
+		System.out.println("Your balance now is : " + playerBalance);
+		System.out.println("There are " + (numCards - n) + " cards left in the deck");
 	}
 
 }
